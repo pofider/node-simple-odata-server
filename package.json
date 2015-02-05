@@ -1,0 +1,22 @@
+{
+  "name": "simple-odata-store",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "author": "Jan Blaha",
+  "license": "LGPL",
+  "dependencies": {
+    "methods": "^1.1.1",
+    "nedb": "^1.1.1",
+    "path-to-regexp": "^1.0.3",
+    "xmlbuilder": "^2.5.0"
+  },
+  "devDependencies": {
+    "should": "^4.6.4",
+    "xml2js": "^0.4.4",
+    "supertest": "^0.15.0"
+  }
+}
