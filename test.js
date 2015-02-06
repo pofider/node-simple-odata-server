@@ -1,6 +1,7 @@
 var http = require('http');
 var Datastore = require('nedb');
 var db = new Datastore();
+var fs = require("fs");
 
 var model = {
     namespace: "jsreport",
@@ -25,7 +26,7 @@ var model = {
 }
 
 
-var odataServer = require("./index.js")("http://localhost:1337");
+var odataServer = require("./index.js")("http://localhost:1337/odata");
 odataServer.model(model);
 odataServer.query(function (query, cb) {
     var q = query.$count ? db.count(query.$filter) : db.find(query.$filter);
@@ -54,7 +55,12 @@ odataServer.update(function (query, update, cb) {
 http.createServer(function (req, res) {
     console.log(req.method + ":" + req.url);
 
-    odataServer.handle(req, res);
+    if (req.url === "/") {
+        res.writeHead(200, {'Content-Type': 'text/html', 'DataServiceVersion': '4.0', 'OData-Version': '4.0'});
+        return res.end(fs.readFileSync("index.html"));
+    } else {
+        odataServer.handle(req, res);
+    }
 }).listen(1337);
 
 db.insert({"_id": "1", "test": "a", num: 1, addresses: [{ "street":"a1"}]});
