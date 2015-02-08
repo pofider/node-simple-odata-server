@@ -22,6 +22,8 @@ describe("odata server", function () {
             cb(null, [ { a: "a"}]);
         });
 
+        odataServer.on("odata-error", done);
+
         request(server)
             .get("/users")
             .expect("Content-Type", /application\/json/)
