@@ -11,6 +11,18 @@ describe("transform", function () {
         }).$limit.should.be.eql(5);
     });
 
+    it("$orderby to $sort asc", function () {
+        transform({
+            $orderby: [{"test": "asc"}]
+        }).$sort.test.should.be.eql(1);
+    });
+
+    it("$orderby to $sort desc", function () {
+        transform({
+            $orderby: [{"test": "desc"}]
+        }).$sort.test.should.be.eql(-1);
+    });
+
     it("Name eq 'John' and LastName lt 'Doe", function () {
         var result = transform({
             $filter: {

@@ -17,7 +17,7 @@ describe("odata server", function () {
         });
     });
 
-    it("should get collection", function (done) {
+    it("get collection", function (done) {
         odataServer.query(function (query, cb) {
             cb(null, [ { a: "a"}]);
         });
@@ -26,6 +26,27 @@ describe("odata server", function () {
 
         request(server)
             .get("/users")
+            .expect("Content-Type", /application\/json/)
+            .expect(200)
+            .expect(function(res) {
+                res.body.value.should.be.ok;
+                res.body.value.length.should.be.eql(1);
+                res.body.value[0].a.should.be.eql("a");
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("get should ignore invalid query string", function (done) {
+        odataServer.query(function (query, cb) {
+            cb(null, [ { a: "a"}]);
+        });
+
+        odataServer.on("odata-error", done);
+
+        request(server)
+            .get("/users?foo=a")
             .expect("Content-Type", /application\/json/)
             .expect(200)
             .expect(function(res) {
@@ -51,8 +72,8 @@ describe("odata server", function () {
             });
     });
 
-    it("should insert document", function (done) {
-        odataServer.insert(function (query, cb) {
+    it("post document", function (done) {
+        odataServer.insert(function (collection, doc, cb) {
             cb(null, { test: "foo", _id: "aa" });
         });
 
@@ -71,8 +92,8 @@ describe("odata server", function () {
             });
     });
 
-    it("insert with error should be propagated to the response", function (done) {
-        odataServer.insert(function (query, cb) {
+    it("post with error should be propagated to the response", function (done) {
+        odataServer.insert(function (collection, doc, cb) {
             cb(new Error("test"));
         });
 
@@ -85,8 +106,8 @@ describe("odata server", function () {
             });
     });
 
-    it("should update document", function (done) {
-        odataServer.update(function (query, update, cb) {
+    it("patch document", function (done) {
+        odataServer.update(function (collection, query, update, cb) {
             query._id.should.be.eql("1");
             update.$set.test.should.be.eql("foo");
             cb(null, { test: "foo" });
@@ -101,15 +122,28 @@ describe("odata server", function () {
             });
     });
 
-    it("update error should be propagated to response", function (done) {
+    it("patch error should be propagated to response", function (done) {
         odataServer.update(function (query, update, cb) {
             cb(new Error("test"));
         });
 
         request(server)
-            .patch("/users('1')")
+            .patch("/users(1)")
             .send({ test: "foo" })
             .expect(500)
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("delete document", function (done) {
+        odataServer.remove(function (collection, query, cb) {
+            cb(null);
+        });
+
+        request(server)
+            .delete("/users('1')")
+            .expect(204)
             .end(function(err, res) {
                 done(err);
             });
