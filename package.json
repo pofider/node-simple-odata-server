@@ -7,18 +7,19 @@
     "test": "mocha -R spec"
   },
   "author": "Jan Blaha",
-  "license": "LGPL",
+  "license": "MIT",
   "dependencies": {
-    "methods": "^1.1.1",
-    "nedb": "^1.1.1",
-    "odata-parser": "^1.2.0",
-    "path-to-regexp": "^1.0.3",
-    "xmlbuilder": "^2.5.0"
+    "methods": "1.1.1",
+    "odata-parser": "1.2.0",
+    "path-to-regexp": "1.0.3",
+    "xmlbuilder": "2.5.0"
   },
   "devDependencies": {
-    "should": "^4.6.4",
-    "xml2js": "^0.4.4",
-    "supertest": "^0.15.0",
-    "mocha": "^2.1.0"
+    "mocha": "2.1.0",
+    "nedb": "1.1.1",
+    "mongodb": "1.4.31",
+    "should": "4.6.4",
+    "supertest": "0.15.0",
+    "xml2js": "0.4.4"
   }
 }

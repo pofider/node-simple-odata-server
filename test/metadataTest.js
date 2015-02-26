@@ -14,7 +14,7 @@ describe("metadata", function () {
             if (err) done(err);
 
             data["edmx:Edmx"].should.be.ok;
-            data["edmx:Edmx"].$.version.should.be.eql("4.0");
+            data["edmx:Edmx"].$.Version.should.be.eql("4.0");
 
             data["edmx:Edmx"]["edmx:DataServices"].should.be.ok;
             data["edmx:Edmx"]["edmx:DataServices"][0].Schema.should.be.ok;
@@ -49,33 +49,6 @@ describe("metadata", function () {
             entityContainer.EntitySet[0].$.Name.should.be.eql("users");
             entityContainer.EntitySet[0].$.EntityType.should.be.eql("jsreport.UserType");
 
-
-            //var foo = {
-            //    "edmx:Edmx": {
-            //        "$": {
-            //            version : "4.0"
-            //        },
-            //        "edmx:DataServices" : [ {
-            //            "Schema": [{
-            //                "$": {
-            //                    "Namespace" : "jsreport"
-            //                },
-            //                "EntityContainer": [{
-            //                    "Entityset": [ {
-            //
-            //                    }]
-            //                }],
-            //                "EntityType": [{
-            //                    "Key": [{
-            //
-            //                    }],
-            //                    "Property": []
-            //
-            //                }]
-            //            }]
-            //        }]
-            //    }
-            //};
 
             done();
 

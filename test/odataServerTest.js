@@ -18,7 +18,7 @@ describe("odata server", function () {
     });
 
     it("get collection", function (done) {
-        odataServer.query(function (query, cb) {
+        odataServer.query(function (col, query, cb) {
             cb(null, [ { a: "a"}]);
         });
 
@@ -39,7 +39,7 @@ describe("odata server", function () {
     });
 
     it("get should ignore invalid query string", function (done) {
-        odataServer.query(function (query, cb) {
+        odataServer.query(function (col, query, cb) {
             cb(null, [ { a: "a"}]);
         });
 
