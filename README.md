@@ -39,12 +39,12 @@ var odataServer = ODataServer("http://localhost:1337")
 http.createServer(odataServer.handle.bind(odataServer)).listen(1337);
 ```
 
-Now you can try requests like:</br>
-GET [http://localhost:1337/$metadata]()</br>
-GET [http://localhost:1337users?$filter=test eq 'a' or test eq 'b'&$skip=1&$take=5]()</br>
-GET [http://localhost:1337users('aaaa')]()</br>
-GET [http://localhost:1337users?$orderby=test desc]()</br>
-GET [http://localhost:1337users/$count]()</br>
+Now you can try requests like:<br/>
+GET [http://localhost:1337/$metadata]()</br/>
+GET [http://localhost:1337users?$filter=test eq 'a' or test eq 'b'&$skip=1&$take=5]()<br/>
+GET [http://localhost:1337users('aaaa')]()<br/>
+GET [http://localhost:1337users?$orderby=test desc]()<br/>
+GET [http://localhost:1337users/$count]()<br/>
 POST, PATCH, DELETE
 
 ##mongodb
