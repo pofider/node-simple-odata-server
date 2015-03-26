@@ -92,4 +92,14 @@ describe("transform", function () {
         result.$filter.$or[0].Name.should.be.eql("John");
         result.$filter.$or[1].LastName.$gt.should.be.eql("Doe");
     });
+
+    it("$filter substringof  to regex", function () {
+        transform({
+            $filter: {
+                type: "functioncall",
+                func: "substringof",
+                args: [{ "type": "literal", "value": "foo"}, {"type": "property", "name": "data"}]
+            }
+        }).$filter.data.should.be.eql(/foo/);
+    });
 });
