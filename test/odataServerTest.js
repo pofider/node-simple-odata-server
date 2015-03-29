@@ -19,7 +19,7 @@ describe("odata server", function () {
 
     it("get collection", function (done) {
         odataServer.query(function (col, query, cb) {
-            cb(null, [ { a: "a"}]);
+            cb(null, [ { test: "a"}]);
         });
 
         odataServer.on("odata-error", done);
@@ -31,7 +31,7 @@ describe("odata server", function () {
             .expect(function(res) {
                 res.body.value.should.be.ok;
                 res.body.value.length.should.be.eql(1);
-                res.body.value[0].a.should.be.eql("a");
+                res.body.value[0].test.should.be.eql("a");
             })
             .end(function(err, res) {
                 done(err);
@@ -40,7 +40,7 @@ describe("odata server", function () {
 
     it("get should ignore invalid query string", function (done) {
         odataServer.query(function (col, query, cb) {
-            cb(null, [ { a: "a"}]);
+            cb(null, [ { test: "a"}]);
         });
 
         odataServer.on("odata-error", done);
@@ -52,12 +52,76 @@ describe("odata server", function () {
             .expect(function(res) {
                 res.body.value.should.be.ok;
                 res.body.value.length.should.be.eql(1);
-                res.body.value[0].a.should.be.eql("a");
+                res.body.value[0].test.should.be.eql("a");
             })
             .end(function(err, res) {
                 done(err);
             });
     });
+
+    it("get should prune properties", function (done) {
+        odataServer.query(function (col, query, cb) {
+            cb(null, [{ test: "a", "a": "b"}]);
+        });
+
+        odataServer.on("odata-error", done);
+
+        request(server)
+            .get("/users")
+            .expect(200)
+            .expect(function(res) {
+                res.body.value.should.be.ok;
+                res.body.value[0].should.have.property("test");
+                res.body.value[0].should.not.have.property("a");
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("get should prune properties also with by id query", function (done) {
+        odataServer.query(function (col, query, cb) {
+            cb(null, [{ test: "a", "a": "b", _id: "foo"}]);
+        });
+
+        odataServer.on("odata-error", done);
+
+        request(server)
+            .get("/users('foo')")
+            .expect(200)
+            .expect(function(res) {
+                res.body.value.should.be.ok;
+                res.body.value[0].should.have.property("test");
+                res.body.value[0].should.not.have.property("a");
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("get should prune properties also with count enabled", function (done) {
+        odataServer.query(function (col, query, cb) {
+            cb(null, {
+                count: 1,
+                value: [{ test: "a", "a": "b"}]
+            });
+        });
+
+        odataServer.on("odata-error", done);
+
+        request(server)
+            .get("/users?$count=true")
+            .expect(200)
+            .expect(function(res) {
+                res.body.value.should.be.ok;
+                res.body.value[0].should.have.property("test");
+                res.body.value[0].should.not.have.property("a");
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
 
     it("get with error should be propagated to response", function (done) {
         odataServer.query(function (query, cb) {
@@ -87,6 +151,42 @@ describe("odata server", function () {
                 res.body._id.should.be.ok;
                 res.body.test.should.be.eql("foo");
             })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("post with base64 should store buffer and return base64", function (done) {
+        odataServer.insert(function (collection, doc, cb) {
+            doc.image.should.be.instanceOf(Buffer);
+            doc._id = "xx";
+            cb(null, doc);
+        });
+
+        request(server)
+            .post("/users")
+            .expect("Content-Type", /application\/json/)
+            .send({ image: "aaaa" })
+            .expect(201)
+            .expect(function(res) {
+                res.body.should.be.ok;
+                res.body.image.should.be.instanceOf(String);
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("patch with base64 should store buffer", function (done) {
+        odataServer.update(function (collection, query, update, cb) {
+            update.$set.image.should.be.instanceOf(Buffer);
+            cb(null);
+        });
+
+        request(server)
+            .patch("/users('1')")
+            .send({ image: "aaaa" })
+            .expect(204)
             .end(function(err, res) {
                 done(err);
             });

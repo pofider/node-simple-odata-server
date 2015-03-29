@@ -102,4 +102,12 @@ describe("transform", function () {
             }
         }).$filter.data.should.be.eql(/foo/);
     });
+
+    it("$select should create mongo style projection", function () {
+        var query = transform({
+            $select: ["foo", "x", "_id"]
+        });
+        query.$select.should.have.property("_id");
+        query.$select.should.have.property("x");
+    });
 });

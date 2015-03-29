@@ -17,7 +17,7 @@ describe("neDBAdapter", function () {
     });
 
     it("insert should add _id", function (done) {
-        odataServer.cfg.insert("test", {foo: "Hello"}, function (err, doc) {
+        odataServer.cfg.insert("users", {foo: "Hello"}, function (err, doc) {
             if (err)
                 return done(err);
 
@@ -31,7 +31,7 @@ describe("neDBAdapter", function () {
             if (err)
                 return done(err);
 
-            odataServer.cfg.remove("test", {}, function (err) {
+            odataServer.cfg.remove("users", {}, function (err) {
                 if (err)
                     return done(err);
 
@@ -51,7 +51,7 @@ describe("neDBAdapter", function () {
             if (err)
                 return done(err);
 
-            odataServer.cfg.update("test", { foo: "Hello"}, { $set: { foo: "updated"}}, function (err) {
+            odataServer.cfg.update("users", { foo: "Hello"}, { $set: { foo: "updated"}}, function (err) {
                 if (err)
                     return done(err);
 
@@ -71,7 +71,7 @@ describe("neDBAdapter", function () {
             if (err)
                 return done(err);
 
-            odataServer.cfg.query("test", { foo: "Hello"}, function (err, res) {
+            odataServer.cfg.query("users", { $filter: { foo: "Hello"} }, function (err, res) {
                 if (err)
                     return done(err);
 
@@ -86,11 +86,28 @@ describe("neDBAdapter", function () {
             if (err)
                 return done(err);
 
-            odataServer.cfg.query("test", { foo: "different"}, function (err, res) {
+            odataServer.cfg.query("users", { $filter: { foo: "different" } }, function (err, res) {
                 if (err)
                     return done(err);
 
-                res.should.have.length(1);
+                res.should.have.length(0);
+                done();
+            });
+        });
+    });
+
+    it("query should do projections", function (done) {
+        db.insert({foo: "Hello", x: "x"}, function(err) {
+            if (err)
+                return done(err);
+
+            odataServer.cfg.query("users", { $select : { "foo": 1, "_id": 1 } }, function (err, res) {
+                if (err)
+                    return done(err);
+
+                res[0].should.have.property("_id");
+                res[0].should.have.property("foo");
+                res[0].should.not.have.property("x");
                 done();
             });
         });

@@ -5,7 +5,8 @@ module.exports = {
             "_id": {"type": "Edm.String", key: true},
             "test": {"type": "Edm.String"},
             "num": {"type": "Edm.Int32"},
-            "addresses": { "type": "Collection(jsreport.AddressType)"}
+            "addresses": { "type": "Collection(jsreport.AddressType)"},
+            "image": { "type": "Edm.Binary"}
         }
     },
     complexTypes: {

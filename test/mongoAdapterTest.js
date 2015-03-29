@@ -83,7 +83,7 @@ describe("mongoAdapter", function () {
             if (err)
                 return done(err);
 
-            odataServer.cfg.query("test", { foo: "Hello"}, function (err, res) {
+            odataServer.cfg.query("test", { $filter : { foo: "Hello"} }, function (err, res) {
                 if (err)
                     return done(err);
 
@@ -98,11 +98,27 @@ describe("mongoAdapter", function () {
             if (err)
                 return done(err);
 
-            odataServer.cfg.query("test", { foo: "different"}, function (err, res) {
+            odataServer.cfg.query("test", { $filter: { foo: "different"} }, function (err, res) {
                 if (err)
                     done(err);
 
-                res.should.have.length(1);
+                res.should.have.length(0);
+                done();
+            });
+        });
+    });
+
+    it("query should do projections", function (done) {
+        db.collection("test").insert({foo: "Hello", x: "x"}, function(err) {
+            if (err)
+                return done(err);
+
+            odataServer.cfg.query("test", { $select : { "foo": 1 } }, function (err, res) {
+                if (err)
+                    return done(err);
+
+                res[0].should.have.property("foo");
+                res[0].should.not.have.property("x");
                 done();
             });
         });
