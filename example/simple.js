@@ -5,7 +5,7 @@ var db = new Datastore( { inMemoryOnly: true });
 var model = {
     namespace: "jsreport",
     entityTypes: {
-        "jsreport.UserType": {
+        "UserType": {
             "_id": {"type": "Edm.String", key: true},
             "test": {"type": "Edm.String"}//,
             //"num": {"type": "Edm.Int32"},
