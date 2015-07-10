@@ -79,6 +79,26 @@ describe("odata server", function () {
             });
     });
 
+    it("post should prune properties", function (done) {
+        odataServer.insert(function (collection, doc, cb) {
+            cb(null, { test: "foo", _id: "aa", a: "a" });
+        });
+
+        request(server)
+            .post("/users")
+            .expect("Content-Type", /application\/json/)
+            .send({ test: "foo" })
+            .expect(201)
+            .expect(function(res) {
+                res.body.should.be.ok;
+                res.body._id.should.be.ok;
+                res.body.should.not.have.property("a");
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
     it("get should prune properties also with by id query", function (done) {
         odataServer.query(function (col, query, cb) {
             cb(null, [{ test: "a", "a": "b", _id: "foo"}]);
