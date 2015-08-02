@@ -21,7 +21,7 @@ var ODataServer = require("simple-odata-server");
 var model = {
     namespace: "jsreport",
     entityTypes: {
-        "jsreport.UserType": {
+        "UserType": {
             "_id": {"type": "Edm.String", key: true},
             "test": {"type": "Edm.String"},            
         }
