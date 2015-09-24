@@ -132,6 +132,7 @@ describe("neDBAdapter", function () {
                 .expect(function (res) {
                     res.body.should.be.ok;
                     res.body.value[0].image.should.be.instanceOf(String);
+                    res.body.value[0].image.should.be.eql(new Buffer([1, 2, 3]).toString('base64'));
                 })
                 .end(function (err, res) {
                     done(err);
