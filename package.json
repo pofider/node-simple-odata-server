@@ -1,6 +1,6 @@
 {
   "name": "simple-odata-server",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "OData server with adapter for mongodb and nedb",
   "main": "index.js",
   "scripts": {
