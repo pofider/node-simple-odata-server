@@ -2,6 +2,8 @@ var Datastore = require('nedb');
 var ODataServer = require("../index.js");
 var model = require("./model.js");
 var should = require("should");
+var http = require("http");
+var request = require("supertest");
 
 
 describe("neDBAdapter", function () {
@@ -13,7 +15,7 @@ describe("neDBAdapter", function () {
         odataServer.model(model);
         odataServer.onNeDB(function (coll, cb) {
             cb(null, db);
-        })
+        });
     });
 
     it("insert should add _id", function (done) {
@@ -110,6 +112,30 @@ describe("neDBAdapter", function () {
                 res[0].should.not.have.property("x");
                 done();
             });
+        });
+    });
+
+    it("handle inconsistency on nedb with node 4 where object is returned instead of buffer", function (done) {
+
+        var server = http.createServer(function (req, res) {
+            odataServer.handle(req, res);
+        });
+
+        db.insert({image: new Buffer([1, 2, 3])}, function (err, doc) {
+            if (err)
+                return done(err);
+
+            request(server)
+                .get("/users")
+                .expect("Content-Type", /application\/json/)
+                .expect(200)
+                .expect(function (res) {
+                    res.body.should.be.ok;
+                    res.body.value[0].image.should.be.instanceOf(String);
+                })
+                .end(function (err, res) {
+                    done(err);
+                });
         });
     });
 });
