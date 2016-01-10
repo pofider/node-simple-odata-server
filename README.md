@@ -75,10 +75,10 @@ odataServer
 	.update(fn(setName, query, update, cb))
 	.insert(fn(setName, doc, cb))
 	.remove(fn(setName, query, cb))
-	.beforeQuery(fn(setName, query, cb))
-	.beforeUpdate(fn(setName, query, update))
-	.beforeInsert(fn(setName, doc, cb))
-	.beforeRemove(fn(setName, query, cb))
+	.beforeQuery(fn(setName, query, req, cb))
+	.beforeUpdate(fn(setName, query, req, update))
+	.beforeInsert(fn(setName, doc, req, cb))
+	.beforeRemove(fn(setName, query, req, cb))
 	.afterRead(fn(setName, result));
 	//add hook to error which you can handle or pass to default
 	.error(fn(req, res, error, default))

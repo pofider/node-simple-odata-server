@@ -294,4 +294,106 @@ describe("odata server", function () {
                 done(err);
             });
     });
+
+    it("executeQuery should fire beforeQuery listener", function (done) {
+        odataServer.beforeQuery(function(col, query, req, cb) {
+            col.should.be.eql('users');
+            query.isQuery.should.be.ok;
+            req.isReq.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeQuery('users', {isQuery: true}, { isReq: true}, function () {
+        });
+    });
+
+    it("executeQuery should fire beforeQuery listener when no request param is accepted", function (done) {
+        odataServer.beforeQuery(function(col, query, cb) {
+            col.should.be.eql('users');
+            query.isQuery.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeQuery('users', {isQuery: true}, { isReq: true}, function () {
+        });
+    });
+
+    it("executeInsert should fire beforeInsert listener", function (done) {
+        odataServer.beforeInsert(function(col, doc, req, cb) {
+            col.should.be.eql('users');
+            doc.isDoc.should.be.ok;
+            req.isReq.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeInsert('users', {isDoc: true}, { isReq: true}, function () {
+        });
+    });
+
+    it("executeInsert should fire beforeInsert listener when no request param is accepted", function (done) {
+        odataServer.beforeInsert(function(col, doc, cb) {
+            col.should.be.eql('users');
+            doc.isDoc.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeInsert('users', {isDoc: true}, { isReq: true}, function () {
+        });
+    });
+
+    it("executeRemove should fire beforeRemove listener", function (done) {
+        odataServer.beforeRemove(function(col, query, req, cb) {
+            col.should.be.eql('users');
+            query.isQuery.should.be.ok;
+            req.isReq.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeRemove('users', {isQuery: true}, { isReq: true}, function () {
+        });
+    });
+
+    it("executeRemove should fire beforeRemove listener when no request param is accepted", function (done) {
+        odataServer.beforeRemove(function(col, query, cb) {
+            col.should.be.eql('users');
+            query.isQuery.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeRemove('users', {isQuery: true}, { isReq: true}, function () {
+        });
+    });
+
+    it("executeUpdate should fire beforeUpdate listener", function (done) {
+        odataServer.beforeUpdate(function(col, query, update, req, cb) {
+            col.should.be.eql('users');
+            query.isQuery.should.be.ok;
+            update.isUpdate.should.be.ok;
+            req.isReq.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeUpdate('users', {isQuery: true}, {isUpdate: true}, { isReq: true}, function () {
+        });
+    });
+
+    it("executeUpdate should fire beforeUpdate listener when no request param is accepted", function (done) {
+        odataServer.beforeUpdate(function(col, query, update, cb) {
+            col.should.be.eql('users');
+            query.isQuery.should.be.ok;
+            update.isUpdate.should.be.ok;
+            cb.should.be.a.Function;
+            done();
+        });
+
+        odataServer.executeUpdate('users', {isQuery: true}, {isUpdate: true}, { isReq: true}, function () {
+        });
+    });
 });
