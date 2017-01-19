@@ -5,21 +5,23 @@ var http = require("http");
 var ODataServer = require("../index.js");
 var model = require("./model.js");
 
-describe("odata server", function () {
+describe("odata server", function() {
     var odataServer;
     var server;
 
-    beforeEach(function () {
+    beforeEach(function() {
         odataServer = ODataServer("http://localhost:1234");
         odataServer.model(model);
-        server = http.createServer(function (req, res) {
+        server = http.createServer(function(req, res) {
             odataServer.handle(req, res);
         });
     });
 
-    it("get collection", function (done) {
-        odataServer.query(function (col, query, cb) {
-            cb(null, [ { test: "a"}]);
+    it("get collection", function(done) {
+        odataServer.query(function(col, query, cb) {
+            cb(null, [{
+                test: "a"
+            }]);
         });
 
         odataServer.on("odata-error", done);
@@ -38,9 +40,11 @@ describe("odata server", function () {
             });
     });
 
-    it("get should ignore invalid query string", function (done) {
-        odataServer.query(function (col, query, cb) {
-            cb(null, [ { test: "a"}]);
+    it("get should ignore invalid query string", function(done) {
+        odataServer.query(function(col, query, cb) {
+            cb(null, [{
+                test: "a"
+            }]);
         });
 
         odataServer.on("odata-error", done);
@@ -59,9 +63,12 @@ describe("odata server", function () {
             });
     });
 
-    it("get should prune properties", function (done) {
-        odataServer.query(function (col, query, cb) {
-            cb(null, [{ test: "a", "a": "b"}]);
+    it("get should prune properties", function(done) {
+        odataServer.query(function(col, query, cb) {
+            cb(null, [{
+                test: "a",
+                "a": "b"
+            }]);
         });
 
         odataServer.on("odata-error", done);
@@ -79,15 +86,94 @@ describe("odata server", function () {
             });
     });
 
-    it("post should prune properties", function (done) {
-        odataServer.insert(function (collection, doc, cb) {
-            cb(null, { test: "foo", _id: "aa", a: "a" });
+    it("get should always return response with header with odata.metadata=minimal", function(done) {
+        odataServer.query(function(col, query, cb) {
+            cb(null, [{
+                test: "a",
+                "a": "b"
+            }]);
+        });
+
+        odataServer.on("odata-error", done);
+        request(server)
+            .get("/users")
+            .expect(200)
+            .expect("Content-Type", /odata.metadata=minimal/)
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("get should have the selection fields in its @odata.context if $select is passed", function(done) {
+        var selectedField1 = "num",
+            selectedField2 = "image",
+            expectedResult = {
+                "context": "http://localhost:1234/$metadata#users(" + selectedField1 + "," + selectedField2 + ")"
+            }
+        odataServer.query(function(col, query, cb) {
+            cb(null, [{
+                num: 1,
+                "a": "b"
+            }]);
+        });
+        odataServer.on("odata-error", done);
+        request(server)
+            .get("/users?$select=" + selectedField1 + "," + selectedField2)
+            .expect(200)
+            .expect(function(res) {
+                res.body.value.should.be.ok;
+                res.body.value[0].should.have.property("num");
+                res.body.value[0].should.not.have.property("a");
+                res.body["@odata.context"].should.be.eql(expectedResult.context);
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+    it("get should have the selection fields along with $entity in @odata.context for filtered query", function(done) {
+        var key = "someKey",
+            result = {
+                "num": 1
+            };
+        odataServer.query(function(col, query, cb) {
+            cb(null, {
+                "num": 1
+            });
+        });
+
+        odataServer.on("odata-error", done);
+        request(server)
+            .get("/users($" + key + ")?$select=num")
+            .expect(200)
+            .expect(function(res) {
+                res.body.value.should.be.ok;
+                res.body["@odata.context"].should.be.eql("http://localhost:1234/$metadata#users(num)/$entity");
+                res.body.should.have.property("value");
+                res.body["value"].should.be.eql(result);
+            })
+            .end(function(err, res) {
+                done(err);
+            });
+    });
+
+
+
+    it("post should prune properties", function(done) {
+        odataServer.insert(function(collection, doc, cb) {
+            cb(null, {
+                test: "foo",
+                _id: "aa",
+                a: "a"
+            });
         });
 
         request(server)
             .post("/users")
             .expect("Content-Type", /application\/json/)
-            .send({ test: "foo" })
+            .send({
+                test: "foo"
+            })
             .expect(201)
             .expect(function(res) {
                 res.body.should.be.ok;
@@ -99,9 +185,13 @@ describe("odata server", function () {
             });
     });
 
-    it("get should prune properties also with by id query", function (done) {
-        odataServer.query(function (col, query, cb) {
-            cb(null, [{ test: "a", "a": "b", _id: "foo"}]);
+    it("get should prune properties also with by id query", function(done) {
+        odataServer.query(function(col, query, cb) {
+            cb(null, [{
+                test: "a",
+                "a": "b",
+                _id: "foo"
+            }]);
         });
 
         odataServer.on("odata-error", done);
@@ -119,11 +209,14 @@ describe("odata server", function () {
             });
     });
 
-    it("get should prune properties also with count enabled", function (done) {
-        odataServer.query(function (col, query, cb) {
+    it("get should prune properties also with count enabled", function(done) {
+        odataServer.query(function(col, query, cb) {
             cb(null, {
                 count: 1,
-                value: [{ test: "a", "a": "b"}]
+                value: [{
+                    test: "a",
+                    "a": "b"
+                }]
             });
         });
 
@@ -143,8 +236,8 @@ describe("odata server", function () {
     });
 
 
-    it("get with error should be propagated to response", function (done) {
-        odataServer.query(function (query, cb) {
+    it("get with error should be propagated to response", function(done) {
+        odataServer.query(function(query, cb) {
             cb(new Error("test"));
         });
 
@@ -156,15 +249,20 @@ describe("odata server", function () {
             });
     });
 
-    it("post document", function (done) {
-        odataServer.insert(function (collection, doc, cb) {
-            cb(null, { test: "foo", _id: "aa" });
+    it("post document", function(done) {
+        odataServer.insert(function(collection, doc, cb) {
+            cb(null, {
+                test: "foo",
+                _id: "aa"
+            });
         });
 
         request(server)
             .post("/users")
             .expect("Content-Type", /application\/json/)
-            .send({ test: "foo" })
+            .send({
+                test: "foo"
+            })
             .expect(201)
             .expect(function(res) {
                 res.body.should.be.ok;
@@ -176,8 +274,8 @@ describe("odata server", function () {
             });
     });
 
-    it("post with base64 should store buffer and return base64", function (done) {
-        odataServer.insert(function (collection, doc, cb) {
+    it("post with base64 should store buffer and return base64", function(done) {
+        odataServer.insert(function(collection, doc, cb) {
             doc.image.should.be.instanceOf(Buffer);
             doc._id = "xx";
             cb(null, doc);
@@ -186,7 +284,9 @@ describe("odata server", function () {
         request(server)
             .post("/users")
             .expect("Content-Type", /application\/json/)
-            .send({ image: "aaaa" })
+            .send({
+                image: "aaaa"
+            })
             .expect(201)
             .expect(function(res) {
                 res.body.should.be.ok;
@@ -197,67 +297,77 @@ describe("odata server", function () {
             });
     });
 
-    it("patch with base64 should store buffer", function (done) {
-        odataServer.update(function (collection, query, update, cb) {
+    it("patch with base64 should store buffer", function(done) {
+        odataServer.update(function(collection, query, update, cb) {
             update.$set.image.should.be.instanceOf(Buffer);
             cb(null);
         });
 
         request(server)
             .patch("/users('1')")
-            .send({ image: "aaaa" })
+            .send({
+                image: "aaaa"
+            })
             .expect(204)
             .end(function(err, res) {
                 done(err);
             });
     });
 
-    it("post with error should be propagated to the response", function (done) {
-        odataServer.insert(function (collection, doc, cb) {
+    it("post with error should be propagated to the response", function(done) {
+        odataServer.insert(function(collection, doc, cb) {
             cb(new Error("test"));
         });
 
         request(server)
             .post("/users")
-            .send({ test: "foo" })
+            .send({
+                test: "foo"
+            })
             .expect(500)
             .end(function(err, res) {
                 done(err);
             });
     });
 
-    it("patch document", function (done) {
-        odataServer.update(function (collection, query, update, cb) {
+    it("patch document", function(done) {
+        odataServer.update(function(collection, query, update, cb) {
             query._id.should.be.eql("1");
             update.$set.test.should.be.eql("foo");
-            cb(null, { test: "foo" });
+            cb(null, {
+                test: "foo"
+            });
         });
 
         request(server)
             .patch("/users('1')")
-            .send({ test: "foo" })
+            .send({
+                test: "foo"
+            })
             .expect(204)
             .end(function(err, res) {
                 done(err);
             });
     });
 
-    it("patch error should be propagated to response", function (done) {
-        odataServer.update(function (query, update, cb) {
+    it("patch error should be propagated to response", function(done) {
+        odataServer.update(function(query, update, cb) {
             cb(new Error("test"));
         });
 
         request(server)
             .patch("/users(1)")
-            .send({ test: "foo" })
+            .send({
+                test: "foo"
+            })
             .expect(500)
             .end(function(err, res) {
                 done(err);
             });
     });
 
-    it("delete document", function (done) {
-        odataServer.remove(function (collection, query, cb) {
+    it("delete document", function(done) {
+        odataServer.remove(function(collection, query, cb) {
             cb(null);
         });
 
@@ -269,7 +379,7 @@ describe("odata server", function () {
             });
     });
 
-    it("$metadata should response xml", function (done) {
+    it("$metadata should response xml", function(done) {
         request(server)
             .get("/$metadata")
             .expect("Content-Type", /application\/xml/)
@@ -279,7 +389,7 @@ describe("odata server", function () {
             });
     });
 
-    it("/ should response collections json", function (done) {
+    it("/ should response collections json", function(done) {
         request(server)
             .get("/")
             .expect("Content-Type", /application\/json/)
@@ -295,7 +405,7 @@ describe("odata server", function () {
             });
     });
 
-    it("executeQuery should fire beforeQuery listener", function (done) {
+    it("executeQuery should fire beforeQuery listener", function(done) {
         odataServer.beforeQuery(function(col, query, req, cb) {
             col.should.be.eql('users');
             query.isQuery.should.be.ok;
@@ -304,11 +414,14 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeQuery('users', {isQuery: true}, { isReq: true}, function () {
-        });
+        odataServer.executeQuery('users', {
+            isQuery: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 
-    it("executeQuery should fire beforeQuery listener when no request param is accepted", function (done) {
+    it("executeQuery should fire beforeQuery listener when no request param is accepted", function(done) {
         odataServer.beforeQuery(function(col, query, cb) {
             col.should.be.eql('users');
             query.isQuery.should.be.ok;
@@ -316,11 +429,14 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeQuery('users', {isQuery: true}, { isReq: true}, function () {
-        });
+        odataServer.executeQuery('users', {
+            isQuery: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 
-    it("executeInsert should fire beforeInsert listener", function (done) {
+    it("executeInsert should fire beforeInsert listener", function(done) {
         odataServer.beforeInsert(function(col, doc, req, cb) {
             col.should.be.eql('users');
             doc.isDoc.should.be.ok;
@@ -329,11 +445,14 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeInsert('users', {isDoc: true}, { isReq: true}, function () {
-        });
+        odataServer.executeInsert('users', {
+            isDoc: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 
-    it("executeInsert should fire beforeInsert listener when no request param is accepted", function (done) {
+    it("executeInsert should fire beforeInsert listener when no request param is accepted", function(done) {
         odataServer.beforeInsert(function(col, doc, cb) {
             col.should.be.eql('users');
             doc.isDoc.should.be.ok;
@@ -341,11 +460,14 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeInsert('users', {isDoc: true}, { isReq: true}, function () {
-        });
+        odataServer.executeInsert('users', {
+            isDoc: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 
-    it("executeRemove should fire beforeRemove listener", function (done) {
+    it("executeRemove should fire beforeRemove listener", function(done) {
         odataServer.beforeRemove(function(col, query, req, cb) {
             col.should.be.eql('users');
             query.isQuery.should.be.ok;
@@ -354,11 +476,14 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeRemove('users', {isQuery: true}, { isReq: true}, function () {
-        });
+        odataServer.executeRemove('users', {
+            isQuery: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 
-    it("executeRemove should fire beforeRemove listener when no request param is accepted", function (done) {
+    it("executeRemove should fire beforeRemove listener when no request param is accepted", function(done) {
         odataServer.beforeRemove(function(col, query, cb) {
             col.should.be.eql('users');
             query.isQuery.should.be.ok;
@@ -366,11 +491,14 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeRemove('users', {isQuery: true}, { isReq: true}, function () {
-        });
+        odataServer.executeRemove('users', {
+            isQuery: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 
-    it("executeUpdate should fire beforeUpdate listener", function (done) {
+    it("executeUpdate should fire beforeUpdate listener", function(done) {
         odataServer.beforeUpdate(function(col, query, update, req, cb) {
             col.should.be.eql('users');
             query.isQuery.should.be.ok;
@@ -380,11 +508,16 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeUpdate('users', {isQuery: true}, {isUpdate: true}, { isReq: true}, function () {
-        });
+        odataServer.executeUpdate('users', {
+            isQuery: true
+        }, {
+            isUpdate: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 
-    it("executeUpdate should fire beforeUpdate listener when no request param is accepted", function (done) {
+    it("executeUpdate should fire beforeUpdate listener when no request param is accepted", function(done) {
         odataServer.beforeUpdate(function(col, query, update, cb) {
             col.should.be.eql('users');
             query.isQuery.should.be.ok;
@@ -393,7 +526,12 @@ describe("odata server", function () {
             done();
         });
 
-        odataServer.executeUpdate('users', {isQuery: true}, {isUpdate: true}, { isReq: true}, function () {
-        });
+        odataServer.executeUpdate('users', {
+            isQuery: true
+        }, {
+            isUpdate: true
+        }, {
+            isReq: true
+        }, function() {});
     });
 });
