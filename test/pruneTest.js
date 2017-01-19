@@ -2,31 +2,48 @@ var should = require("should");
 var prune = require("../lib/prune.js");
 
 
-describe("prune", function () {
+describe("prune", function() {
 
     var model;
 
-    beforeEach(function () {
+    beforeEach(function() {
         model = {
             namespace: "jsreport",
             entityTypes: {
                 "UserType": {
-                    "_id": {"type": "Edm.String", key: true},
-                    "test": {"type": "Edm.String"},
-                    "addresses": { "type": "Collection(jsreport.AddressType)"},
-                    "address": {"type": "jsreport.AddressType"},
-                    "nested": {"type": "jsreport.NestedType"}
+                    "_id": {
+                        "type": "Edm.String",
+                        key: true
+                    },
+                    "test": {
+                        "type": "Edm.String"
+                    },
+                    "addresses": {
+                        "type": "Collection(jsreport.AddressType)"
+                    },
+                    "address": {
+                        "type": "jsreport.AddressType"
+                    },
+                    "nested": {
+                        "type": "jsreport.NestedType"
+                    }
                 }
             },
             complexTypes: {
                 "AddressType": {
-                    "street": {"type": "Edm.String"}
+                    "street": {
+                        "type": "Edm.String"
+                    }
                 },
                 "NestedInnerType": {
-                    name: {"type": "Edm.String"}
+                    name: {
+                        "type": "Edm.String"
+                    }
                 },
                 "NestedType": {
-                    items: {"type": "jsreport.NestedInnerType"}
+                    items: {
+                        "type": "jsreport.NestedInnerType"
+                    }
                 }
             },
             entitySets: {
@@ -37,7 +54,7 @@ describe("prune", function () {
         };
     });
 
-    it("should remove properties not specified in entity type", function () {
+    it("should remove properties not specified in entity type", function() {
         var doc = {
             "test": "x",
             "a": "a"
@@ -47,7 +64,7 @@ describe("prune", function () {
         doc.should.have.property("test");
     });
 
-    it("should accept arrays on input", function () {
+    it("should accept arrays on input", function() {
         var doc = {
             "test": "x",
             "a": "a"
@@ -57,7 +74,7 @@ describe("prune", function () {
         doc.should.have.property("test");
     });
 
-    it("should prune also in nested complex types", function () {
+    it("should prune also in nested complex types", function() {
         var doc = {
             "address": {
                 "street": "street",
@@ -71,7 +88,7 @@ describe("prune", function () {
         doc.address.should.not.have.property("a");
     });
 
-    it("should not remove nested complex type when pruning", function () {
+    it("should not remove nested complex type when pruning", function() {
         var doc = {
             "nested": {
                 "items": [{
@@ -86,5 +103,18 @@ describe("prune", function () {
         doc.nested.items.should.have.length(1);
         doc.nested.items[0].should.have.property("name");
         doc.nested.items[0].name.should.be.eql("foo");
+    });
+    it("should not prune prefixes with @odata", function() {
+        var doc = {
+            "@odata.type": "someEntityType",
+            "@odata.id": "someOdataEndpoint/setName/(key)",
+            "@odata.editLink": "setName('key')",
+            "test": "x"
+        };
+        prune(model, "users", doc);
+        doc.should.have.property("@odata.type");
+        doc.should.have.property("@odata.id");
+        doc.should.have.property("@odata.editLink");
+        doc.should.have.property("test");
     });
 });
