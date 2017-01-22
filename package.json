@@ -4,24 +4,37 @@
   "description": "OData server with adapter for mongodb and nedb",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "standard && mocha -R spec"
   },
   "author": "Jan Blaha",
   "license": "MIT",
   "repository": "pofider/node-simple-odata-server",
-  "keywords": [ "OData", "server", "mongodb", "nedb"],
+  "keywords": [
+    "OData",
+    "server",
+    "mongodb",
+    "nedb"
+  ],
+  "standard": {
+    "ignore": "example/**"
+  },
   "dependencies": {
-    "methods": "1.1.1",
-    "odata-parser": "1.2.0",
-    "path-to-regexp": "1.0.3",
-    "xmlbuilder": "2.5.0"
+    "methods": "1.1.2",
+    "odata-parser": "1.4.1",
+    "path-to-regexp": "1.7.0",    
+    "xmlbuilder": "8.2.2"
   },
   "devDependencies": {
-    "mocha": "2.2.1",
-    "nedb": "1.1.1",
-    "mongodb": "2.0.26",
-    "should": "5.2.0",
-    "supertest": "0.15.0",
-    "xml2js": "0.4.6"
-  }
+    "mocha": "3.2.0",
+    "nedb": "1.8.0",
+    "mongodb": "2.2.21",
+    "should": "11.1.2",
+    "standard": "8.6.0",
+    "supertest": "2.0.1",
+    "xml2js": "0.4.17"
+  },
+  "files": [
+    "lib",   
+    "index.js"  
+  ]
 }
