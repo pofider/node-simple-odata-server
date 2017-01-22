@@ -532,3 +532,24 @@ describe('odata server', function () {
     }, function () {})
   })
 })
+
+describe('odata server with cors', function () {
+  var odataServer
+  var server
+
+  it('options on * should response 200 with Access-Control-Allow-Origin', function (done) {
+    odataServer = ODataServer('http://localhost:1234')
+    odataServer.model(model).cors('test.com')
+    server = http.createServer(function (req, res) {
+      odataServer.handle(req, res)
+    })
+
+    request(server)
+            .options('/$metadata')
+            .expect('Access-Control-Allow-Origin', /test.com/)
+            .expect(200)
+            .end(function (err, res) {
+              done(err)
+            })
+  })
+})

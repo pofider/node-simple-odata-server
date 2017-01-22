@@ -66,6 +66,13 @@ app.use("/odata", function (req, res) {
     });
 ```
 
+##cors
+You can quickly set up cors without using express and middlewares using this call
+
+```js
+odataServer.cors('*')
+```
+
 ##Configurations
 Using `onNeDB` and `onMongo` is just a simple way for initializing `ODataServer`. You can implement your own data layer or override default behavior using following methods: 
 
