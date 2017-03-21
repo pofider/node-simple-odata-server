@@ -1,4 +1,4 @@
-#Node simple OData server
+# Node simple OData server
 [![NPM Version](http://img.shields.io/npm/v/simple-odata-server.svg?style=flat-square)](https://npmjs.com/package/simple-odata-server)
 [![License](http://img.shields.io/npm/l/simple-odata-server.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/pofider/node-simple-odata-server.png?branch=master)](https://travis-ci.org/pofider/node-simple-odata-server)    
@@ -9,7 +9,7 @@ It supports basic operations you would expect like providing $metadata, filterin
 
 The implementation is tested with [.net OData client](https://github.com/object/Simple.OData.Client) and it should fulfill basic protocol requirements.
 
-##Get started
+## Get started
 
 This is how you can create an OData server with node.js http module and nedb.
 ```js
@@ -49,7 +49,7 @@ GET [http://localhost:1337/users?$orderby=test desc]()<br/>
 GET [http://localhost:1337/users/$count]()<br/>
 POST, PATCH, DELETE
 
-##mongodb
+## mongodb
 It works the same way with nedb and mongo. You just need to provide callback for mongo database instance.
 ```js
 MongoClient.connect(url, function(err, db) {
@@ -57,7 +57,7 @@ MongoClient.connect(url, function(err, db) {
 });
 ```
 
-##express.js
+## express.js
 It works well also with the express.js. You even don't need to provide service uri in the `ODataServer` constructor because it is taken from the express.js request.
 
 ```js
@@ -66,14 +66,14 @@ app.use("/odata", function (req, res) {
     });
 ```
 
-##cors
+## cors
 You can quickly set up cors without using express and middlewares using this call
 
 ```js
 odataServer.cors('*')
 ```
 
-##Configurations
+## Configurations
 Using `onNeDB` and `onMongo` is just a simple way for initializing `ODataServer`. You can implement your own data layer or override default behavior using following methods: 
 
 ```js
@@ -93,10 +93,10 @@ odataServer
 
 
 
-##Contributions
+## Contributions
 I will maintain this repository for a while because I use it in [jsreport](https://github.com/jsreport/jsreport). You are more than welcome to contribute with pull requests and add other basic operations you require. 
 
-##Limitations
+## Limitations
 - document ids must have name **_id**
 - no entity links
 - no batch operations
