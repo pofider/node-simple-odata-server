@@ -103,6 +103,6 @@ I will maintain this repository for a while because I use it in [jsreport](https
 - no validations
 - ... this would be a very long list, so rather check yourself
 
-##License
+## License
 See [license](https://github.com/pofider/node-simple-odata-server/blob/master/LICENSE)
 
