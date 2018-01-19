@@ -16,7 +16,11 @@
     "nedb"
   ],
   "standard": {
-    "ignore": "example/**"
+    "ignore": "example/**",
+    "env": {
+      "mocha": true,
+      "node": true
+    }
   },
   "dependencies": {
     "methods": "1.1.2",

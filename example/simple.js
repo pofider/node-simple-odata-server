@@ -1,3 +1,5 @@
+var ODataServer = require('simple-odata-server')
+var Adapter = require('simple-odata-server-nedb')
 var http = require('http')
 var Datastore = require('nedb')
 var db = new Datastore({ inMemoryOnly: true })
@@ -25,9 +27,9 @@ var model = {
   }
 }
 
-var odataServer = require('./../index.js')('http://localhost:1337')
+var odataServer = ODataServer('http://localhost:1337')
   .model(model)
-  .onNeDB(function (es, cb) { cb(null, db) })
+  .adapter(Adapter(function (es, cb) { cb(null, db) }))
 
 http.createServer(odataServer.handle.bind(odataServer)).listen(1337)
 
@@ -36,3 +38,5 @@ db.insert({'_id': '2', 'test': 'b', num: 2, addresses: [{'street': 'a2'}]})
 db.insert({'_id': '3', 'test': 'c', num: 3})
 db.insert({'_id': '4', 'test': 'd', num: 4})
 db.insert({'_id': '5', 'test': 'e', num: 5})
+
+console.log('server running on http://localhost:1337')

@@ -1,3 +1,4 @@
+
 # Node simple OData server
 [![NPM Version](http://img.shields.io/npm/v/simple-odata-server.svg?style=flat-square)](https://npmjs.com/package/simple-odata-server)
 [![License](http://img.shields.io/npm/l/simple-odata-server.svg?style=flat-square)](http://opensource.org/licenses/MIT)
@@ -16,7 +17,8 @@ This is how you can create an OData server with node.js http module and nedb.
 var http = require('http');
 var Datastore = require('nedb');
 var db = new Datastore( { inMemoryOnly: true });
-var ODataServer = require("simple-odata-server");
+var ODataServer = require('simple-odata-server');
+var Adapter = require('simple-odata-server-nedb');
 
 var model = {
     namespace: "jsreport",
@@ -35,7 +37,7 @@ var model = {
 
 var odataServer = ODataServer("http://localhost:1337")
     .model(model)
-    .onNeDB(function(es, cb) { cb(null, db)});
+    .adapter(Adapter(function(es, cb) { cb(null, db)}));
 
 
 http.createServer(odataServer.handle.bind(odataServer)).listen(1337);
@@ -49,11 +51,17 @@ GET [http://localhost:1337/users?$orderby=test desc]()<br/>
 GET [http://localhost:1337/users/$count]()<br/>
 POST, PATCH, DELETE
 
-## mongodb
-It works the same way with nedb and mongo. You just need to provide callback for mongo database instance.
+## Adapters
+There are currently two adapters implemented. 
+
+- [mongodb](https://www.mongodb.com/) - [pofider/node-simple-odata-server-mongodb](https://github.com/pofider/node-simple-odata-server-mongodb)
+- [nedb](https://github.com/louischatriot/nedb) - [pofider/node-simple-odata-server-nedb](https://github.com/pofider/node-simple-odata-server-nedb)
+
+The `mongo` adapter can be used as
 ```js
+var Adapter = require('simple-odata-server-mongodb')
 MongoClient.connect(url, function(err, db) {
-	odataServer.onMongo(function(cb) { cb(err, db); }); 
+	odataServer.adapter(Adapter(function(cb) { cb(err, db); })); 
 });
 ```
 
@@ -63,7 +71,7 @@ It works well also with the express.js. You even don't need to provide service u
 ```js
 app.use("/odata", function (req, res) {
         odataServer.handle(req, res);
-    });
+});
 ```
 
 ## cors
@@ -74,7 +82,7 @@ odataServer.cors('*')
 ```
 
 ## Configurations
-Using `onNeDB` and `onMongo` is just a simple way for initializing `ODataServer`. You can implement your own data layer or override default behavior using following methods: 
+Using existing `adapter`  is just a simple way for initializing `ODataServer`. You can implement your own data layer or override default behavior using following methods: 
 
 ```js
 odataServer

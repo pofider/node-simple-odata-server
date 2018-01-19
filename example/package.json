@@ -1,0 +1,15 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "simple.js",
+  "scripts": {
+    "start": "node simple.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "simple-odata-server": "github:pofider/node-simple-odata-server",
+    "simple-odata-server-nedb": "github:pofider/node-simple-odata-server-nedb"
+  }
+}
