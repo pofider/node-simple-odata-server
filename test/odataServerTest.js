@@ -27,17 +27,17 @@ describe('odata server', function () {
     odataServer.on('odata-error', done)
 
     request(server)
-            .get('/users')
-            .expect('Content-Type', /application\/json/)
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.should.be.ok
-              res.body.value.length.should.be.eql(1)
-              res.body.value[0].test.should.be.eql('a')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users')
+      .expect('Content-Type', /application\/json/)
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.ok()
+        res.body.value.length.should.be.eql(1)
+        res.body.value[0].test.should.be.eql('a')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get should ignore invalid query string', function (done) {
@@ -50,17 +50,17 @@ describe('odata server', function () {
     odataServer.on('odata-error', done)
 
     request(server)
-            .get('/users?foo=a')
-            .expect('Content-Type', /application\/json/)
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.should.be.ok
-              res.body.value.length.should.be.eql(1)
-              res.body.value[0].test.should.be.eql('a')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users?foo=a')
+      .expect('Content-Type', /application\/json/)
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.ok()
+        res.body.value.length.should.be.eql(1)
+        res.body.value[0].test.should.be.eql('a')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get should prune properties', function (done) {
@@ -74,16 +74,16 @@ describe('odata server', function () {
     odataServer.on('odata-error', done)
 
     request(server)
-            .get('/users')
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.should.be.ok
-              res.body.value[0].should.have.property('test')
-              res.body.value[0].should.not.have.property('a')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users')
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.ok()
+        res.body.value[0].should.have.property('test')
+        res.body.value[0].should.not.have.property('a')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get should always return response with header with odata.metadata=minimal', function (done) {
@@ -96,12 +96,12 @@ describe('odata server', function () {
 
     odataServer.on('odata-error', done)
     request(server)
-            .get('/users')
-            .expect(200)
-            .expect('Content-Type', /odata.metadata=minimal/)
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users')
+      .expect(200)
+      .expect('Content-Type', /odata.metadata=minimal/)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get should have the selection fields in its @odata.context if $select is passed', function (done) {
@@ -118,17 +118,17 @@ describe('odata server', function () {
     })
     odataServer.on('odata-error', done)
     request(server)
-            .get('/users?$select=' + selectedField1 + ',' + selectedField2)
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.should.be.ok
-              res.body.value[0].should.have.property('num')
-              res.body.value[0].should.not.have.property('a')
-              res.body['@odata.context'].should.be.eql(expectedResult.context)
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users?$select=' + selectedField1 + ',' + selectedField2)
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.ok()
+        res.body.value[0].should.have.property('num')
+        res.body.value[0].should.not.have.property('a')
+        res.body['@odata.context'].should.be.eql(expectedResult.context)
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get should have the selection fields along with $entity in @odata.context for filtered query', function (done) {
@@ -144,17 +144,17 @@ describe('odata server', function () {
 
     odataServer.on('odata-error', done)
     request(server)
-            .get('/users($' + key + ')?$select=num')
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.should.be.ok
-              res.body['@odata.context'].should.be.eql('http://localhost:1234/$metadata#users(num)/$entity')
-              res.body.should.have.property('value')
-              res.body['value'].should.be.eql(result)
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users($' + key + ')?$select=num')
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.ok()
+        res.body['@odata.context'].should.be.eql('http://localhost:1234/$metadata#users(num)/$entity')
+        res.body.should.have.property('value')
+        res.body['value'].should.be.eql(result)
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('post should prune properties', function (done) {
@@ -167,20 +167,20 @@ describe('odata server', function () {
     })
 
     request(server)
-            .post('/users')
-            .expect('Content-Type', /application\/json/)
-            .send({
-              test: 'foo'
-            })
-            .expect(201)
-            .expect(function (res) {
-              res.body.should.be.ok
-              res.body._id.should.be.ok
-              res.body.should.not.have.property('a')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .post('/users')
+      .expect('Content-Type', /application\/json/)
+      .send({
+        test: 'foo'
+      })
+      .expect(201)
+      .expect(function (res) {
+        res.body.should.be.ok()
+        res.body._id.should.be.ok()
+        res.body.should.not.have.property('a')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get should prune properties also with by id query', function (done) {
@@ -195,16 +195,16 @@ describe('odata server', function () {
     odataServer.on('odata-error', done)
 
     request(server)
-            .get("/users('foo')")
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.should.be.ok
-              res.body.value[0].should.have.property('test')
-              res.body.value[0].should.not.have.property('a')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get("/users('foo')")
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.ok()
+        res.body.value[0].should.have.property('test')
+        res.body.value[0].should.not.have.property('a')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get should prune properties also with count enabled', function (done) {
@@ -221,16 +221,16 @@ describe('odata server', function () {
     odataServer.on('odata-error', done)
 
     request(server)
-            .get('/users?$count=true')
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.should.be.ok
-              res.body.value[0].should.have.property('test')
-              res.body.value[0].should.not.have.property('a')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users?$count=true')
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.ok()
+        res.body.value[0].should.have.property('test')
+        res.body.value[0].should.not.have.property('a')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('get with error should be propagated to response', function (done) {
@@ -239,11 +239,11 @@ describe('odata server', function () {
     })
 
     request(server)
-            .get('/users')
-            .expect(500)
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/users')
+      .expect(500)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('post document', function (done) {
@@ -255,20 +255,20 @@ describe('odata server', function () {
     })
 
     request(server)
-            .post('/users')
-            .expect('Content-Type', /application\/json/)
-            .send({
-              test: 'foo'
-            })
-            .expect(201)
-            .expect(function (res) {
-              res.body.should.be.ok
-              res.body._id.should.be.ok
-              res.body.test.should.be.eql('foo')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .post('/users')
+      .expect('Content-Type', /application\/json/)
+      .send({
+        test: 'foo'
+      })
+      .expect(201)
+      .expect(function (res) {
+        res.body.should.be.ok()
+        res.body._id.should.be.ok()
+        res.body.test.should.be.eql('foo')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('post with base64 should store buffer and return base64', function (done) {
@@ -279,19 +279,19 @@ describe('odata server', function () {
     })
 
     request(server)
-            .post('/users')
-            .expect('Content-Type', /application\/json/)
-            .send({
-              image: 'aaaa'
-            })
-            .expect(201)
-            .expect(function (res) {
-              res.body.should.be.ok
-              res.body.image.should.be.instanceOf(String)
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .post('/users')
+      .expect('Content-Type', /application\/json/)
+      .send({
+        image: 'aaaa'
+      })
+      .expect(201)
+      .expect(function (res) {
+        res.body.should.be.ok()
+        res.body.image.should.be.instanceOf(String)
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('patch with base64 should store buffer', function (done) {
@@ -301,14 +301,14 @@ describe('odata server', function () {
     })
 
     request(server)
-            .patch("/users('1')")
-            .send({
-              image: 'aaaa'
-            })
-            .expect(204)
-            .end(function (err, res) {
-              done(err)
-            })
+      .patch("/users('1')")
+      .send({
+        image: 'aaaa'
+      })
+      .expect(204)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('post with error should be propagated to the response', function (done) {
@@ -317,14 +317,14 @@ describe('odata server', function () {
     })
 
     request(server)
-            .post('/users')
-            .send({
-              test: 'foo'
-            })
-            .expect(500)
-            .end(function (err, res) {
-              done(err)
-            })
+      .post('/users')
+      .send({
+        test: 'foo'
+      })
+      .expect(500)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('patch document', function (done) {
@@ -337,14 +337,14 @@ describe('odata server', function () {
     })
 
     request(server)
-            .patch("/users('1')")
-            .send({
-              test: 'foo'
-            })
-            .expect(204)
-            .end(function (err, res) {
-              done(err)
-            })
+      .patch("/users('1')")
+      .send({
+        test: 'foo'
+      })
+      .expect(204)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('patch error should be propagated to response', function (done) {
@@ -353,14 +353,14 @@ describe('odata server', function () {
     })
 
     request(server)
-            .patch('/users(1)')
-            .send({
-              test: 'foo'
-            })
-            .expect(500)
-            .end(function (err, res) {
-              done(err)
-            })
+      .patch('/users(1)')
+      .send({
+        test: 'foo'
+      })
+      .expect(500)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('delete document', function (done) {
@@ -369,45 +369,45 @@ describe('odata server', function () {
     })
 
     request(server)
-            .delete("/users('1')")
-            .expect(204)
-            .end(function (err, res) {
-              done(err)
-            })
+      .delete("/users('1')")
+      .expect(204)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('$metadata should response xml', function (done) {
     request(server)
-            .get('/$metadata')
-            .expect('Content-Type', /application\/xml/)
-            .expect(200)
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/$metadata')
+      .expect('Content-Type', /application\/xml/)
+      .expect(200)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('/ should response collections json', function (done) {
     request(server)
-            .get('/')
-            .expect('Content-Type', /application\/json/)
-            .expect(200)
-            .expect(function (res) {
-              res.body.value.length.should.be.eql(1)
-              res.body.value[0].name.should.be.eql('users')
-              res.body.value[0].name.should.be.eql('users')
-              res.body.value[0].kind.should.be.eql('EntitySet')
-            })
-            .end(function (err, res) {
-              done(err)
-            })
+      .get('/')
+      .expect('Content-Type', /application\/json/)
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.length.should.be.eql(1)
+        res.body.value[0].name.should.be.eql('users')
+        res.body.value[0].name.should.be.eql('users')
+        res.body.value[0].kind.should.be.eql('EntitySet')
+      })
+      .end(function (err, res) {
+        done(err)
+      })
   })
 
   it('executeQuery should fire beforeQuery listener', function (done) {
     odataServer.beforeQuery(function (col, query, req, cb) {
       col.should.be.eql('users')
-      query.isQuery.should.be.ok
-      req.isReq.should.be.ok
-      cb.should.be.a.Function
+      query.isQuery.should.be.ok()
+      req.isReq.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -421,8 +421,8 @@ describe('odata server', function () {
   it('executeQuery should fire beforeQuery listener when no request param is accepted', function (done) {
     odataServer.beforeQuery(function (col, query, cb) {
       col.should.be.eql('users')
-      query.isQuery.should.be.ok
-      cb.should.be.a.Function
+      query.isQuery.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -436,9 +436,9 @@ describe('odata server', function () {
   it('executeInsert should fire beforeInsert listener', function (done) {
     odataServer.beforeInsert(function (col, doc, req, cb) {
       col.should.be.eql('users')
-      doc.isDoc.should.be.ok
-      req.isReq.should.be.ok
-      cb.should.be.a.Function
+      doc.isDoc.should.be.ok()
+      req.isReq.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -452,8 +452,8 @@ describe('odata server', function () {
   it('executeInsert should fire beforeInsert listener when no request param is accepted', function (done) {
     odataServer.beforeInsert(function (col, doc, cb) {
       col.should.be.eql('users')
-      doc.isDoc.should.be.ok
-      cb.should.be.a.Function
+      doc.isDoc.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -467,9 +467,9 @@ describe('odata server', function () {
   it('executeRemove should fire beforeRemove listener', function (done) {
     odataServer.beforeRemove(function (col, query, req, cb) {
       col.should.be.eql('users')
-      query.isQuery.should.be.ok
-      req.isReq.should.be.ok
-      cb.should.be.a.Function
+      query.isQuery.should.be.ok()
+      req.isReq.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -483,8 +483,8 @@ describe('odata server', function () {
   it('executeRemove should fire beforeRemove listener when no request param is accepted', function (done) {
     odataServer.beforeRemove(function (col, query, cb) {
       col.should.be.eql('users')
-      query.isQuery.should.be.ok
-      cb.should.be.a.Function
+      query.isQuery.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -498,10 +498,10 @@ describe('odata server', function () {
   it('executeUpdate should fire beforeUpdate listener', function (done) {
     odataServer.beforeUpdate(function (col, query, update, req, cb) {
       col.should.be.eql('users')
-      query.isQuery.should.be.ok
-      update.isUpdate.should.be.ok
-      req.isReq.should.be.ok
-      cb.should.be.a.Function
+      query.isQuery.should.be.ok()
+      update.isUpdate.should.be.ok()
+      req.isReq.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -517,9 +517,9 @@ describe('odata server', function () {
   it('executeUpdate should fire beforeUpdate listener when no request param is accepted', function (done) {
     odataServer.beforeUpdate(function (col, query, update, cb) {
       col.should.be.eql('users')
-      query.isQuery.should.be.ok
-      update.isUpdate.should.be.ok
-      cb.should.be.a.Function
+      query.isQuery.should.be.ok()
+      update.isUpdate.should.be.ok()
+      cb.should.be.a.Function()
       done()
     })
 
@@ -545,11 +545,11 @@ describe('odata server with cors', function () {
     })
 
     request(server)
-            .options('/$metadata')
-            .expect('Access-Control-Allow-Origin', /test.com/)
-            .expect(200)
-            .end(function (err, res) {
-              done(err)
-            })
+      .options('/$metadata')
+      .expect('Access-Control-Allow-Origin', /test.com/)
+      .expect(200)
+      .end(function (err, res) {
+        done(err)
+      })
   })
 })

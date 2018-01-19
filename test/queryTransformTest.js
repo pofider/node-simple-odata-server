@@ -50,7 +50,7 @@ describe('transform', function () {
       }
     })
 
-    result.$filter.$and.should.be.ok
+    result.$filter.$and.should.be.ok()
     result.$filter.$and.length.should.be.eql(2)
     result.$filter.$and[0].Name.should.be.eql('John')
     result.$filter.$and[1].LastName.$lt.should.be.eql('Doe')
@@ -85,7 +85,7 @@ describe('transform', function () {
       }
     })
 
-    result.$filter.$or.should.be.ok
+    result.$filter.$or.should.be.ok()
     result.$filter.$or.length.should.be.eql(2)
     result.$filter.$or[0].Name.should.be.eql('John')
     result.$filter.$or[1].LastName.$gt.should.be.eql('Doe')

@@ -14,7 +14,7 @@ describe('mongoAdapter', function () {
         return done(err)
       }
 
-      db = database
+      db = database.db('test')
 
       odataServer = ODataServer('http://localhost:1234')
       odataServer.model(model)

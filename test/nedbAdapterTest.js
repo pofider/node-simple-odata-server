@@ -5,6 +5,7 @@ var model = require('./model.js')
 require('should')
 var http = require('http')
 var request = require('supertest')
+var Buffer = require('safe-buffer').Buffer
 
 describe('neDBAdapter', function () {
   var odataServer
@@ -133,23 +134,23 @@ describe('neDBAdapter', function () {
       odataServer.handle(req, res)
     })
 
-    db.insert({image: new Buffer([1, 2, 3])}, function (err, doc) {
+    db.insert({image: Buffer.from([1, 2, 3])}, function (err, doc) {
       if (err) {
         return done(err)
       }
 
       request(server)
-                .get('/users')
-                .expect('Content-Type', /application\/json/)
-                .expect(200)
-                .expect(function (res) {
-                  res.body.should.be.ok
-                  res.body.value[0].image.should.be.instanceOf(String)
-                  res.body.value[0].image.should.be.eql(new Buffer([1, 2, 3]).toString('base64'))
-                })
-                .end(function (err, res) {
-                  done(err)
-                })
+        .get('/users')
+        .expect('Content-Type', /application\/json/)
+        .expect(200)
+        .expect(function (res) {
+          res.body.should.be.ok()
+          res.body.value[0].image.should.be.instanceOf(String)
+          res.body.value[0].image.should.be.eql(Buffer.from([1, 2, 3]).toString('base64'))
+        })
+        .end(function (err, res) {
+          done(err)
+        })
     })
   })
 })

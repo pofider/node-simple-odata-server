@@ -4,7 +4,7 @@
   "description": "OData server with adapter for mongodb and nedb",
   "main": "index.js",
   "scripts": {
-    "test": "standard && mocha -R spec"
+    "test": "standard && mocha --exit -R spec"
   },
   "author": "Jan Blaha",
   "license": "MIT",
@@ -21,20 +21,22 @@
   "dependencies": {
     "methods": "1.1.2",
     "odata-parser": "1.4.1",
-    "path-to-regexp": "1.7.0",    
-    "xmlbuilder": "8.2.2"
+    "path-to-regexp": "2.1.0",
+    "safe-buffer": "5.1.1",
+    "xmlbuilder": "9.0.4"
   },
   "devDependencies": {
-    "mocha": "3.2.0",
+    "eslint": "4.15.0",
+    "mocha": "4.1.0",
+    "mongodb": "3.0.1",
     "nedb": "1.8.0",
-    "mongodb": "2.2.21",
-    "should": "11.1.2",
-    "standard": "8.6.0",
-    "supertest": "2.0.1",
-    "xml2js": "0.4.17"
+    "should": "13.2.1",
+    "standard": "10.0.3",
+    "supertest": "3.0.0",
+    "xml2js": "0.4.19"
   },
   "files": [
-    "lib",   
-    "index.js"  
+    "lib",
+    "index.js"
   ]
 }
