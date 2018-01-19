@@ -78,10 +78,10 @@ Using `onNeDB` and `onMongo` is just a simple way for initializing `ODataServer`
 
 ```js
 odataServer
-	.query(fn(setName, query, cb))
-	.update(fn(setName, query, update, cb))
-	.insert(fn(setName, doc, cb))
-	.remove(fn(setName, query, cb))
+	.query(fn(setName, query, req, cb))
+	.update(fn(setName, query, update, req, cb))
+	.insert(fn(setName, doc, req, cb))
+	.remove(fn(setName, query, req, cb))
 	.beforeQuery(fn(setName, query, req, cb))
 	.beforeUpdate(fn(setName, query, req, update))
 	.beforeInsert(fn(setName, doc, req, cb))

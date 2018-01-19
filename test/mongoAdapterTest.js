@@ -29,7 +29,7 @@ describe('mongoAdapter', function () {
   })
 
   it('insert should add _id', function (done) {
-    odataServer.cfg.insert('test', {foo: 'Hello'}, function (err, doc) {
+    odataServer.cfg.insert('test', {foo: 'Hello'}, {}, function (err, doc) {
       if (err) {
         return done(err)
       }
@@ -45,7 +45,7 @@ describe('mongoAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.remove('test', {}, function (err) {
+      odataServer.cfg.remove('test', {}, {}, function (err) {
         if (err) {
           return done(err)
         }
@@ -68,7 +68,7 @@ describe('mongoAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.update('test', {foo: 'Hello'}, {$set: {foo: 'updated'}}, function (err) {
+      odataServer.cfg.update('test', {foo: 'Hello'}, {$set: {foo: 'updated'}}, {}, function (err) {
         if (err) {
           return done(err)
         }
@@ -92,7 +92,7 @@ describe('mongoAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.query('test', {$filter: {foo: 'Hello'}}, function (err, res) {
+      odataServer.cfg.query('test', {$filter: {foo: 'Hello'}}, {}, function (err, res) {
         if (err) {
           return done(err)
         }
@@ -109,7 +109,7 @@ describe('mongoAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.query('test', {$filter: {foo: 'different'}}, function (err, res) {
+      odataServer.cfg.query('test', {$filter: {foo: 'different'}}, {}, function (err, res) {
         if (err) {
           done(err)
         }
@@ -126,7 +126,7 @@ describe('mongoAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.query('test', { $select: { 'foo': 1 } }, function (err, res) {
+      odataServer.cfg.query('test', { $select: { 'foo': 1 } }, {}, function (err, res) {
         if (err) {
           return done(err)
         }

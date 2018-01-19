@@ -20,7 +20,7 @@ describe('neDBAdapter', function () {
   })
 
   it('insert should add _id', function (done) {
-    odataServer.cfg.insert('users', {foo: 'Hello'}, function (err, doc) {
+    odataServer.cfg.insert('users', {foo: 'Hello'}, {}, function (err, doc) {
       if (err) {
         return done(err)
       }
@@ -36,7 +36,7 @@ describe('neDBAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.remove('users', {}, function (err) {
+      odataServer.cfg.remove('users', {}, {}, function (err) {
         if (err) {
           return done(err)
         }
@@ -59,7 +59,7 @@ describe('neDBAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.update('users', {foo: 'Hello'}, {$set: {foo: 'updated'}}, function (err) {
+      odataServer.cfg.update('users', {foo: 'Hello'}, {$set: {foo: 'updated'}}, {}, function (err) {
         if (err) {
           return done(err)
         }
@@ -82,7 +82,7 @@ describe('neDBAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.query('users', {$filter: {foo: 'Hello'}}, function (err, res) {
+      odataServer.cfg.query('users', {$filter: {foo: 'Hello'}}, {}, function (err, res) {
         if (err) {
           return done(err)
         }
@@ -99,7 +99,7 @@ describe('neDBAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.query('users', { $filter: { foo: 'different' } }, function (err, res) {
+      odataServer.cfg.query('users', { $filter: { foo: 'different' } }, {}, function (err, res) {
         if (err) {
           return done(err)
         }
@@ -116,7 +116,7 @@ describe('neDBAdapter', function () {
         return done(err)
       }
 
-      odataServer.cfg.query('users', { $select: { 'foo': 1, '_id': 1 } }, function (err, res) {
+      odataServer.cfg.query('users', { $select: { 'foo': 1, '_id': 1 } }, {}, function (err, res) {
         if (err) {
           return done(err)
         }

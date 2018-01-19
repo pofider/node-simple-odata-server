@@ -18,7 +18,7 @@ describe('odata server', function () {
   })
 
   it('get collection', function (done) {
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a'
       }])
@@ -41,7 +41,7 @@ describe('odata server', function () {
   })
 
   it('get should ignore invalid query string', function (done) {
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a'
       }])
@@ -64,7 +64,7 @@ describe('odata server', function () {
   })
 
   it('get should prune properties', function (done) {
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a',
         'a': 'b'
@@ -87,7 +87,7 @@ describe('odata server', function () {
   })
 
   it('get should always return response with header with odata.metadata=minimal', function (done) {
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a',
         'a': 'b'
@@ -110,7 +110,7 @@ describe('odata server', function () {
     var expectedResult = {
       'context': 'http://localhost:1234/$metadata#users(' + selectedField1 + ',' + selectedField2 + ')'
     }
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         num: 1,
         'a': 'b'
@@ -136,7 +136,7 @@ describe('odata server', function () {
     var result = {
       'num': 1
     }
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, {
         'num': 1
       })
@@ -158,7 +158,7 @@ describe('odata server', function () {
   })
 
   it('post should prune properties', function (done) {
-    odataServer.insert(function (collection, doc, cb) {
+    odataServer.insert(function (collection, doc, req, cb) {
       cb(null, {
         test: 'foo',
         _id: 'aa',
@@ -184,7 +184,7 @@ describe('odata server', function () {
   })
 
   it('get should prune properties also with by id query', function (done) {
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a',
         'a': 'b',
@@ -208,7 +208,7 @@ describe('odata server', function () {
   })
 
   it('get should prune properties also with count enabled', function (done) {
-    odataServer.query(function (col, query, cb) {
+    odataServer.query(function (col, query, req, cb) {
       cb(null, {
         count: 1,
         value: [{
@@ -234,7 +234,7 @@ describe('odata server', function () {
   })
 
   it('get with error should be propagated to response', function (done) {
-    odataServer.query(function (query, cb) {
+    odataServer.query(function (query, req, cb) {
       cb(new Error('test'))
     })
 
@@ -247,7 +247,7 @@ describe('odata server', function () {
   })
 
   it('post document', function (done) {
-    odataServer.insert(function (collection, doc, cb) {
+    odataServer.insert(function (collection, doc, req, cb) {
       cb(null, {
         test: 'foo',
         _id: 'aa'
@@ -272,7 +272,7 @@ describe('odata server', function () {
   })
 
   it('post with base64 should store buffer and return base64', function (done) {
-    odataServer.insert(function (collection, doc, cb) {
+    odataServer.insert(function (collection, doc, req, cb) {
       doc.image.should.be.instanceOf(Buffer)
       doc._id = 'xx'
       cb(null, doc)
@@ -295,7 +295,7 @@ describe('odata server', function () {
   })
 
   it('patch with base64 should store buffer', function (done) {
-    odataServer.update(function (collection, query, update, cb) {
+    odataServer.update(function (collection, query, update, req, cb) {
       update.$set.image.should.be.instanceOf(Buffer)
       cb(null)
     })
@@ -312,7 +312,7 @@ describe('odata server', function () {
   })
 
   it('post with error should be propagated to the response', function (done) {
-    odataServer.insert(function (collection, doc, cb) {
+    odataServer.insert(function (collection, doc, req, cb) {
       cb(new Error('test'))
     })
 
@@ -328,7 +328,7 @@ describe('odata server', function () {
   })
 
   it('patch document', function (done) {
-    odataServer.update(function (collection, query, update, cb) {
+    odataServer.update(function (collection, query, update, req, cb) {
       query._id.should.be.eql('1')
       update.$set.test.should.be.eql('foo')
       cb(null, {
@@ -348,7 +348,7 @@ describe('odata server', function () {
   })
 
   it('patch error should be propagated to response', function (done) {
-    odataServer.update(function (query, update, cb) {
+    odataServer.update(function (query, update, req, cb) {
       cb(new Error('test'))
     })
 
@@ -364,7 +364,7 @@ describe('odata server', function () {
   })
 
   it('delete document', function (done) {
-    odataServer.remove(function (collection, query, cb) {
+    odataServer.remove(function (collection, query, req, cb) {
       cb(null)
     })
 
@@ -419,7 +419,7 @@ describe('odata server', function () {
   })
 
   it('executeQuery should fire beforeQuery listener when no request param is accepted', function (done) {
-    odataServer.beforeQuery(function (col, query, cb) {
+    odataServer.beforeQuery(function (col, query, req, cb) {
       col.should.be.eql('users')
       query.isQuery.should.be.ok()
       cb.should.be.a.Function()
@@ -559,7 +559,7 @@ describe('odata server with cors', function () {
     server = http.createServer(function (req, res) {
       odataServer.handle(req, res)
     })
-    odataServer.query(function (collection, query, cb) {
+    odataServer.query(function (collection, query, req, cb) {
       cb(null)
     })
 
@@ -578,11 +578,11 @@ describe('odata server with cors', function () {
     server = http.createServer(function (req, res) {
       odataServer.handle(req, res)
     })
-    odataServer.query(function (collection, query, cb) {
+    odataServer.query(function (collection, query, req, cb) {
       cb(null)
     })
 
-    odataServer.insert(function (collection, doc, cb) {
+    odataServer.insert(function (collection, doc, req, cb) {
       cb(null, {
         test: 'foo',
         _id: 'aa',
@@ -608,7 +608,7 @@ describe('odata server with cors', function () {
     server = http.createServer(function (req, res) {
       odataServer.handle(req, res)
     })
-    odataServer.remove(function (collection, query, cb) {
+    odataServer.remove(function (collection, query, req, cb) {
       cb(null)
     })
 
@@ -628,7 +628,7 @@ describe('odata server with cors', function () {
       odataServer.handle(req, res)
     })
 
-    odataServer.update(function (collection, query, update, cb) {
+    odataServer.update(function (collection, query, update, req, cb) {
       query._id.should.be.eql('1')
       update.$set.test.should.be.eql('foo')
       cb(null, {
