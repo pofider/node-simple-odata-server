@@ -552,4 +552,99 @@ describe('odata server with cors', function () {
         done(err)
       })
   })
+
+  it('get on * should response 200 with Access-Control-Allow-Origin', function (done) {
+    odataServer = ODataServer('http://localhost:1234')
+    odataServer.model(model).cors('test.com')
+    server = http.createServer(function (req, res) {
+      odataServer.handle(req, res)
+    })
+    odataServer.query(function (collection, query, cb) {
+      cb(null)
+    })
+
+    request(server)
+      .get('/users')
+      .expect('Access-Control-Allow-Origin', /test.com/)
+      .expect(200)
+      .end(function (err, res) {
+        done(err)
+      })
+  })
+
+  it('post on * should response 200 with Access-Control-Allow-Origin', function (done) {
+    odataServer = ODataServer('http://localhost:1234')
+    odataServer.model(model).cors('test.com')
+    server = http.createServer(function (req, res) {
+      odataServer.handle(req, res)
+    })
+    odataServer.query(function (collection, query, cb) {
+      cb(null)
+    })
+
+    odataServer.insert(function (collection, doc, cb) {
+      cb(null, {
+        test: 'foo',
+        _id: 'aa',
+        a: 'a'
+      })
+    })
+
+    request(server)
+      .post('/users')
+      .expect('Access-Control-Allow-Origin', /test.com/)
+      .send({
+        test: 'foo'
+      })
+      .expect(201)
+      .end(function (err, res) {
+        done(err)
+      })
+  })
+
+  it('delete on * should response 200 with Access-Control-Allow-Origin', function (done) {
+    odataServer = ODataServer('http://localhost:1234')
+    odataServer.model(model).cors('test.com')
+    server = http.createServer(function (req, res) {
+      odataServer.handle(req, res)
+    })
+    odataServer.remove(function (collection, query, cb) {
+      cb(null)
+    })
+
+    request(server)
+      .delete("/users('1')")
+      .expect('Access-Control-Allow-Origin', /test.com/)
+      .expect(204)
+      .end(function (err, res) {
+        done(err)
+      })
+  })
+
+  it('patch on * should response 200 with Access-Control-Allow-Origin', function (done) {
+    odataServer = ODataServer('http://localhost:1234')
+    odataServer.model(model).cors('test.com')
+    server = http.createServer(function (req, res) {
+      odataServer.handle(req, res)
+    })
+
+    odataServer.update(function (collection, query, update, cb) {
+      query._id.should.be.eql('1')
+      update.$set.test.should.be.eql('foo')
+      cb(null, {
+        test: 'foo'
+      })
+    })
+
+    request(server)
+      .patch("/users('1')")
+      .send({
+        test: 'foo'
+      })
+      .expect('Access-Control-Allow-Origin', /test.com/)
+      .expect(204)
+      .end(function (err, res) {
+        done(err)
+      })
+  })
 })
