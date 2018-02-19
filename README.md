@@ -61,7 +61,9 @@ The `mongo` adapter can be used as
 ```js
 var Adapter = require('simple-odata-server-mongodb')
 MongoClient.connect(url, function(err, db) {
-	odataServer.adapter(Adapter(function(cb) { cb(err, db); })); 
+	odataServer.adapter(Adapter(function(cb) { 
+		cb(err, db.db('myodatadb')); 
+	})); 
 });
 ```
 
