@@ -104,6 +104,24 @@ describe('odata server', function () {
       })
   })
 
+  it('get $count should return number of entries', function (done) {
+    odataServer.query(function (col, query, req, cb) {
+      cb(null, 1)
+    })
+
+    odataServer.on('odata-error', done)
+
+    request(server)
+      .get('/users/$count')
+      .expect(200)
+      .expect(function (res) {
+        res.body.value.should.be.eql(1)
+      })
+      .end(function (err, res) {
+        done(err)
+      })
+  })
+
   it('get should have the selection fields in its @odata.context if $select is passed', function (done) {
     var selectedField1 = 'num'
     var selectedField2 = 'image'
