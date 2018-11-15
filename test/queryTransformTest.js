@@ -108,4 +108,21 @@ describe('transform', function () {
     query.$select.should.have.property('_id')
     query.$select.should.have.property('x')
   })
+
+  it('$filter on nested property', function () {
+    var result = transform({
+      $filter: {
+        type: 'eq',
+        left: {
+          type: 'property',
+          name: 'address/street'
+        },
+        right: {
+          type: 'literal',
+          value: 'foo'
+        }
+      }
+    })
+    result.$filter.address.street.should.be.eql('foo')
+  })
 })
