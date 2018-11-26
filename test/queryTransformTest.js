@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-require('should')
+const should = require('should')
 var transform = require('../lib/queryTransform.js')
 
 describe('transform', function () {
@@ -107,6 +107,26 @@ describe('transform', function () {
     })
     query.$select.should.have.property('_id')
     query.$select.should.have.property('x')
+  })
+
+  it('$filter on null value', function () {
+    var query = transform({
+      $filter: {
+        type: 'eq',
+        left: {
+          type: 'property',
+          name: 'foo'
+        },
+        right: {
+          type: 'literal',
+          // odata parser returns this shape when doing a filter with null
+          // $filter=field eq null
+          value: ['null', '']
+        }
+      }
+    })
+    query.$filter.should.have.property('foo')
+    should(query.$filter.foo).be.null()
   })
 
   it('$filter on nested property', function () {
