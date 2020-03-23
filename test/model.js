@@ -2,7 +2,7 @@ module.exports = {
   namespace: 'jsreport',
   entityTypes: {
     'UserType': {
-      '_id': {'type': 'Edm.String', key: true},
+      '_id': {'type': 'Edm.String', key: true, nullable: false},
       'test': {'type': 'Edm.String'},
       'num': {'type': 'Edm.Int32'},
       'addresses': {'type': 'Collection(jsreport.AddressType)'},
