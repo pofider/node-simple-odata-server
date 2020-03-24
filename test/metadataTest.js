@@ -27,6 +27,7 @@ describe('metadata', function () {
       entityType.Key[0].PropertyRef[0].$.Name.should.be.eql('_id')
       entityType.Property[0].$.Name.should.be.eql('_id')
       entityType.Property[0].$.Type.should.be.eql('Edm.String')
+      entityType.Property[0].$.Nullable.should.be.eql('false')
       entityType.Property[1].$.Name.should.be.eql('test')
       entityType.Property[1].$.Type.should.be.eql('Edm.String')
       entityType.Property[2].$.Name.should.be.eql('num')
