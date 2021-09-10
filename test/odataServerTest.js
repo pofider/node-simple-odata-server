@@ -350,7 +350,7 @@ describe('odata server', function () {
       })
   })
 
-  it.only('patch document', function (done) {
+  it('patch document', function (done) {
     odataServer.update(function (collection, query, update, req, cb) {
       query._id.should.be.eql('1')
       update.$set.test.should.be.eql('foo')
