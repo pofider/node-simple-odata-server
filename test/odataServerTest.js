@@ -177,6 +177,7 @@ describe('odata server', function () {
 
   it('post should prune properties', function (done) {
     odataServer.insert(function (collection, doc, req, cb) {
+      doc.addresses[0].should.not.have.property('@odata.type')
       cb(null, {
         test: 'foo',
         _id: 'aa',
@@ -188,7 +189,11 @@ describe('odata server', function () {
       .post('/users')
       .expect('Content-Type', /application\/json/)
       .send({
-        test: 'foo'
+        test: 'foo',
+        addresses: [{
+          street: 'street',
+          '@odata.type': 'jsreport.AddressType'
+        }]
       })
       .expect(201)
       .expect(function (res) {
@@ -345,10 +350,11 @@ describe('odata server', function () {
       })
   })
 
-  it('patch document', function (done) {
+  it.only('patch document', function (done) {
     odataServer.update(function (collection, query, update, req, cb) {
       query._id.should.be.eql('1')
       update.$set.test.should.be.eql('foo')
+      update.$set.addresses[0].should.not.have.property('@odata.type')
       cb(null, {
         test: 'foo'
       })
@@ -357,7 +363,11 @@ describe('odata server', function () {
     request(server)
       .patch("/users('1')")
       .send({
-        test: 'foo'
+        test: 'foo',
+        addresses: [{
+          street: 'street',
+          '@odata.type': 'jsreport.AddressType'
+        }]
       })
       .expect(204)
       .end(function (err, res) {
