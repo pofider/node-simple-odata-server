@@ -122,6 +122,27 @@ describe('odata server', function () {
       })
   })
 
+  it('get by _id', function (done) {
+    odataServer.query(function (col, query, req, cb) {
+      cb(null, [{
+        _id: '123',
+        test: 'a'
+      }])
+    })
+
+    request(server)
+      .get('/users(\'123\')')
+      .expect(200)
+      .expect(function (res) {
+        res.body.should.not.have.property('0')
+        res.body.test.should.be.eql('a')
+        Array.isArray(res.body.value).should.be.true()
+      })
+      .end(function (err, res) {
+        done(err)
+      })
+  })
+
   it('get should have the selection fields in its @odata.context if $select is passed', function (done) {
     const selectedField1 = 'num'
     const selectedField2 = 'image'
