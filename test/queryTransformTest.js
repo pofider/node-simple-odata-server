@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 const should = require('should')
-var transform = require('../lib/queryTransform.js')
+const transform = require('../lib/queryTransform.js')
 
 describe('transform', function () {
   it('$top to $limit', function () {
@@ -11,18 +11,18 @@ describe('transform', function () {
 
   it('$orderby to $sort asc', function () {
     transform({
-      $orderby: [{'test': 'asc'}]
+      $orderby: [{ test: 'asc' }]
     }).$sort.test.should.be.eql(1)
   })
 
   it('$orderby to $sort desc', function () {
     transform({
-      $orderby: [{'test': 'desc'}]
+      $orderby: [{ test: 'desc' }]
     }).$sort.test.should.be.eql(-1)
   })
 
   it("Name eq 'John' and LastName lt 'Doe", function () {
-    var result = transform({
+    const result = transform({
       $filter: {
         type: 'and',
         left: {
@@ -57,7 +57,7 @@ describe('transform', function () {
   })
 
   it("Name eq 'John' or LastName gt 'Doe", function () {
-    var result = transform({
+    const result = transform({
       $filter: {
         type: 'or',
         left: {
@@ -96,13 +96,13 @@ describe('transform', function () {
       $filter: {
         type: 'functioncall',
         func: 'substringof',
-        args: [{'type': 'literal', 'value': 'foo'}, {'type': 'property', 'name': 'data'}]
+        args: [{ type: 'literal', value: 'foo' }, { type: 'property', name: 'data' }]
       }
     }).$filter.data.should.be.eql(/foo/)
   })
 
   it('$select should create mongo style projection', function () {
-    var query = transform({
+    const query = transform({
       $select: ['foo', 'x', '_id']
     })
     query.$select.should.have.property('_id')
@@ -110,7 +110,7 @@ describe('transform', function () {
   })
 
   it('$filter on null value', function () {
-    var query = transform({
+    const query = transform({
       $filter: {
         type: 'eq',
         left: {
@@ -130,7 +130,7 @@ describe('transform', function () {
   })
 
   it('$filter on nested property', function () {
-    var result = transform({
+    const result = transform({
       $filter: {
         type: 'eq',
         left: {

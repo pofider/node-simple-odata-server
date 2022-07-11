@@ -1,13 +1,13 @@
 /* eslint-env mocha */
 require('should')
-var request = require('supertest')
-var http = require('http')
-var ODataServer = require('../index.js')
-var model = require('./model.js')
+const request = require('supertest')
+const http = require('http')
+const ODataServer = require('../index.js')
+const model = require('./model.js')
 
 describe('odata server', function () {
-  var odataServer
-  var server
+  let odataServer
+  let server
 
   beforeEach(function () {
     odataServer = ODataServer('http://localhost:1234')
@@ -67,7 +67,7 @@ describe('odata server', function () {
     odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a',
-        'a': 'b'
+        a: 'b'
       }])
     })
 
@@ -90,7 +90,7 @@ describe('odata server', function () {
     odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a',
-        'a': 'b'
+        a: 'b'
       }])
     })
 
@@ -123,15 +123,15 @@ describe('odata server', function () {
   })
 
   it('get should have the selection fields in its @odata.context if $select is passed', function (done) {
-    var selectedField1 = 'num'
-    var selectedField2 = 'image'
-    var expectedResult = {
-      'context': 'http://localhost:1234/$metadata#users(' + selectedField1 + ',' + selectedField2 + ')'
+    const selectedField1 = 'num'
+    const selectedField2 = 'image'
+    const expectedResult = {
+      context: 'http://localhost:1234/$metadata#users(' + selectedField1 + ',' + selectedField2 + ')'
     }
     odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         num: 1,
-        'a': 'b'
+        a: 'b'
       }])
     })
     odataServer.on('odata-error', done)
@@ -150,13 +150,13 @@ describe('odata server', function () {
   })
 
   it('get should have the selection fields along with $entity in @odata.context for filtered query', function (done) {
-    var key = 'someKey'
-    var result = {
-      'num': 1
+    const key = 'someKey'
+    const result = {
+      num: 1
     }
     odataServer.query(function (col, query, req, cb) {
       cb(null, {
-        'num': 1
+        num: 1
       })
     })
 
@@ -168,7 +168,7 @@ describe('odata server', function () {
         res.body.value.should.be.ok()
         res.body['@odata.context'].should.be.eql('http://localhost:1234/$metadata#users(num)/$entity')
         res.body.should.have.property('value')
-        res.body['value'].should.be.eql(result)
+        res.body.value.should.be.eql(result)
       })
       .end(function (err, res) {
         done(err)
@@ -210,7 +210,7 @@ describe('odata server', function () {
     odataServer.query(function (col, query, req, cb) {
       cb(null, [{
         test: 'a',
-        'a': 'b',
+        a: 'b',
         _id: 'foo'
       }])
     })
@@ -236,7 +236,7 @@ describe('odata server', function () {
         count: 1,
         value: [{
           test: 'a',
-          'a': 'b'
+          a: 'b'
         }]
       })
     })
@@ -562,8 +562,8 @@ describe('odata server', function () {
 })
 
 describe('odata server with cors', function () {
-  var odataServer
-  var server
+  let odataServer
+  let server
 
   it('options on * should response 200 with Access-Control-Allow-Origin', function (done) {
     odataServer = ODataServer('http://localhost:1234')

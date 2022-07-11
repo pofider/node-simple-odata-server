@@ -25,19 +25,19 @@
   "dependencies": {
     "methods": "1.1.2",
     "odata-parser": "1.4.1",
-    "path-to-regexp": "2.1.0",
-    "safe-buffer": "5.1.1",
-    "xmlbuilder": "9.0.4"
+    "path-to-regexp": "6.2.1",
+    "safe-buffer": "5.2.1",
+    "xmlbuilder": "15.1.1"
   },
   "devDependencies": {
-    "eslint": "4.15.0",
-    "mocha": "4.1.0",
-    "mongodb": "3.0.1",
+    "eslint": "8.19.0",
+    "mocha": "10.0.0",
+    "mongodb": "4.7.0",
     "nedb": "1.8.0",
-    "should": "13.2.1",
-    "standard": "10.0.3",
-    "supertest": "3.0.0",
-    "xml2js": "0.4.19"
+    "should": "13.2.3",
+    "standard": "17.0.0",
+    "supertest": "6.2.4",
+    "xml2js": "0.4.23"
   },
   "files": [
     "lib",

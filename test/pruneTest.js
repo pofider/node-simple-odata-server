@@ -1,52 +1,52 @@
 /* eslint-env mocha */
 require('should')
-var prune = require('../lib/prune.js')
+const prune = require('../lib/prune.js')
 
 describe('prune', function () {
-  var model
+  let model
 
   beforeEach(function () {
     model = {
       namespace: 'jsreport',
       entityTypes: {
-        'UserType': {
-          '_id': {
-            'type': 'Edm.String',
+        UserType: {
+          _id: {
+            type: 'Edm.String',
             key: true
           },
-          'test': {
-            'type': 'Edm.String'
+          test: {
+            type: 'Edm.String'
           },
-          'addresses': {
-            'type': 'Collection(jsreport.AddressType)'
+          addresses: {
+            type: 'Collection(jsreport.AddressType)'
           },
-          'address': {
-            'type': 'jsreport.AddressType'
+          address: {
+            type: 'jsreport.AddressType'
           },
-          'nested': {
-            'type': 'jsreport.NestedType'
+          nested: {
+            type: 'jsreport.NestedType'
           }
         }
       },
       complexTypes: {
-        'AddressType': {
-          'street': {
-            'type': 'Edm.String'
+        AddressType: {
+          street: {
+            type: 'Edm.String'
           }
         },
-        'NestedInnerType': {
+        NestedInnerType: {
           name: {
-            'type': 'Edm.String'
+            type: 'Edm.String'
           }
         },
-        'NestedType': {
+        NestedType: {
           items: {
-            'type': 'jsreport.NestedInnerType'
+            type: 'jsreport.NestedInnerType'
           }
         }
       },
       entitySets: {
-        'users': {
+        users: {
           entityType: 'jsreport.UserType'
         }
       }
@@ -54,9 +54,9 @@ describe('prune', function () {
   })
 
   it('should remove properties not specified in entity type', function () {
-    var doc = {
-      'test': 'x',
-      'a': 'a'
+    const doc = {
+      test: 'x',
+      a: 'a'
     }
     prune(model, 'users', doc)
     doc.should.not.have.property('a')
@@ -64,9 +64,9 @@ describe('prune', function () {
   })
 
   it('should accept arrays on input', function () {
-    var doc = {
-      'test': 'x',
-      'a': 'a'
+    const doc = {
+      test: 'x',
+      a: 'a'
     }
     prune(model, 'users', [doc])
     doc.should.not.have.property('a')
@@ -74,10 +74,10 @@ describe('prune', function () {
   })
 
   it('should prune also in nested complex types', function () {
-    var doc = {
-      'address': {
-        'street': 'street',
-        'a': 'a'
+    const doc = {
+      address: {
+        street: 'street',
+        a: 'a'
       }
     }
     prune(model, 'users', doc)
@@ -88,10 +88,10 @@ describe('prune', function () {
   })
 
   it('should not remove nested complex type when pruning', function () {
-    var doc = {
-      'nested': {
-        'items': [{
-          'name': 'foo'
+    const doc = {
+      nested: {
+        items: [{
+          name: 'foo'
         }]
       }
     }
@@ -104,11 +104,11 @@ describe('prune', function () {
     doc.nested.items[0].name.should.be.eql('foo')
   })
   it('should not prune prefixes with @odata', function () {
-    var doc = {
+    const doc = {
       '@odata.type': 'someEntityType',
       '@odata.id': 'someOdataEndpoint/setName/(key)',
       '@odata.editLink': "setName('key')",
-      'test': 'x'
+      test: 'x'
     }
     prune(model, 'users', doc)
     doc.should.have.property('@odata.type')
