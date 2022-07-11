@@ -2,7 +2,7 @@
 # Node simple OData server
 [![NPM Version](http://img.shields.io/npm/v/simple-odata-server.svg?style=flat-square)](https://npmjs.com/package/simple-odata-server)
 [![License](http://img.shields.io/npm/l/simple-odata-server.svg?style=flat-square)](http://opensource.org/licenses/MIT)
-[![build status](https://github.com/pofider/node-simple-odata-server/actions/workflows/main.yml/badge.svg)](https://github.com/pofider/node-simple-odata-server/actions)node-simple-odata-server)    
+[![build status](https://github.com/pofider/node-simple-odata-server/actions/workflows/main.yml/badge.svg)](https://github.com/pofider/node-simple-odata-server/actions)
 
 **Super simple implementation of OData server running on Node.js with easy adapters for mongodb and nedb.** Just define an OData model, provide a mongo or nedb database, hook into node.js http server and run. 
 
