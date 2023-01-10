@@ -1,3 +1,5 @@
+⚠️ This repository isn't being maintained. It's stable and still used in [jsreport](https://github.com/jsreport/jsreport), but we are too busy to provide adequate maintenance. Don't hesitate to let me know if you plan to maintain a fork so I can share it here..
+--
 
 # Node simple OData server
 [![NPM Version](http://img.shields.io/npm/v/simple-odata-server.svg?style=flat-square)](https://npmjs.com/package/simple-odata-server)
